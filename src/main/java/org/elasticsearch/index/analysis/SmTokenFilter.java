@@ -15,7 +15,7 @@ import com.huaban.analysis.jieba.JiebaSegmenter;
 import com.huaban.analysis.jieba.JiebaSegmenter.SegMode;
 import com.huaban.analysis.jieba.SegToken;
 
-public final class JiebaTokenFilter extends TokenFilter {
+public final class SmTokenFilter extends TokenFilter {
 
     JiebaSegmenter segmenter;
 
@@ -27,7 +27,7 @@ public final class JiebaTokenFilter extends TokenFilter {
     private final OffsetAttribute offsetAtt = addAttribute(OffsetAttribute.class);
     private final TypeAttribute typeAtt = addAttribute(TypeAttribute.class);
 
-    public JiebaTokenFilter(String type, TokenStream input) {
+    public SmTokenFilter(String type, TokenStream input) {
         super(input);
         this.type = type;
         segmenter = new JiebaSegmenter();

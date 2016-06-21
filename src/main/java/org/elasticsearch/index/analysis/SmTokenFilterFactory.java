@@ -34,7 +34,7 @@ public class SmTokenFilterFactory extends AbstractTokenFilterFactory {
 
 	@Override
 	public TokenStream create(TokenStream input) {
-		return new JiebaTokenFilter(type, input);
+		return new SmTokenFilter(type, input);
 	}
 
 }
