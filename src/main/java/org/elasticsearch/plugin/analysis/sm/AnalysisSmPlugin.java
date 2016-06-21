@@ -27,6 +27,7 @@ public class AnalysisSmPlugin extends Plugin {
     public Collection<Module> nodeModules() {
         return Collections.<Module>singletonList(new SmIndicesAnalysisModule());
     }
+
     public void onModule(AnalysisModule module) {
         module.addProcessor(new SmAnalysisBinderProcessor());
     }

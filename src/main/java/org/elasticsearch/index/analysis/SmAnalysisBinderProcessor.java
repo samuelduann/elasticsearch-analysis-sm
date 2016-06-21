@@ -15,4 +15,8 @@ public class SmAnalysisBinderProcessor extends
         analyzersBindings.processAnalyzer("sm", SmAnalyzerProvider.class);
     }
 
+    @Override
+    public void processTokenizers(TokenizersBindings tokenizersBindings) {
+        tokenizersBindings.processTokenizer("sm", SmTokenizerFactory.class);
+    }
 }
