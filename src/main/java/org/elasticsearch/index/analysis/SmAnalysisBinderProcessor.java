@@ -13,7 +13,6 @@ public class SmAnalysisBinderProcessor extends
     @Override
     public void processAnalyzers(AnalyzersBindings analyzersBindings) {
         analyzersBindings.processAnalyzer("sm", SmAnalyzerProvider.class);
-        super.processAnalyzers(analyzersBindings);
     }
 
 }
