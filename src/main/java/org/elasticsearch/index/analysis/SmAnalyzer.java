@@ -6,7 +6,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
+import org.apache.lucene.analysis.core.StopFilter;
+import org.apache.lucene.analysis.en.PorterStemFilter;
 import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.analysis.util.WordlistLoader;
 import org.apache.lucene.util.IOUtils;
@@ -105,6 +108,13 @@ public final class SmAnalyzer extends Analyzer {
 	@Override
 	protected TokenStreamComponents createComponents(String fieldName) {
 		Tokenizer tokenizer = new SentenceTokenizer();
-		return new TokenStreamComponents(tokenizer);
+		Object result = tokenizer;
+
+		result = new PorterStemFilter((TokenStream)result);
+		if(!this.stopWords.isEmpty()) {
+			result = new StopFilter((TokenStream)result, this.stopWords);
+		}
+
+		return new TokenStreamComponents((Tokenizer)tokenizer, (TokenStream)result);
 	}
 }
