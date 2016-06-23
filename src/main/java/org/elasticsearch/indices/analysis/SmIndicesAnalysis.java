@@ -31,7 +31,7 @@ public class SmIndicesAnalysis extends AbstractComponent {
 
                     @Override
                     public Tokenizer create() {
-                        return new SentenceTokenizer();
+                        return new SentenceTokenizer(settings.get("seg_mode", "index").equals("index"));
                     }
                 }));
 

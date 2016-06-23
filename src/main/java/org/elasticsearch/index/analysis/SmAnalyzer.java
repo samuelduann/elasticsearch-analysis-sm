@@ -107,7 +107,7 @@ public final class SmAnalyzer extends Analyzer {
 	 */
 	@Override
 	protected TokenStreamComponents createComponents(String fieldName) {
-		Tokenizer tokenizer = new SentenceTokenizer();
+		Tokenizer tokenizer = new SentenceTokenizer(this.type.equals("index"));
 		Object result = tokenizer;
 
 		result = new PorterStemFilter((TokenStream)result);

@@ -14,18 +14,20 @@ import java.io.File;
  * Created by samuel on 16/6/20.
  */
 public class SmTokenizerFactory extends AbstractTokenizerFactory {
-    private final Settings settings;
+    private String segMode;
 
     @Inject
     public SmTokenizerFactory(Index index, IndexSettingsService indexSettingsService, Environment env,
             @Assisted String name, @Assisted Settings settings) {
         super(index, indexSettingsService.getSettings(), name, settings);
-        this.settings=settings;
+
+        this.segMode = settings.get("seg_mode", "index");
     }
 
 
     @Override
     public Tokenizer create() {
-        return new SentenceTokenizer();  }
+        return new SentenceTokenizer(this.segMode.equals("index"));
+    }
 }
 

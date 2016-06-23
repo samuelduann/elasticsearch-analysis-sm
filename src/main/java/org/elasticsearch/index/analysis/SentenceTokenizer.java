@@ -29,9 +29,14 @@ public final class SentenceTokenizer extends SegmentingTokenizerBase {
     private final TypeAttribute typeAtt;
     private Iterator<SegToken> tokens;
     private JiebaSegmenter segmenter;
+    private JiebaSegmenter.SegMode segMode;
 
-    public SentenceTokenizer() {
+    public SentenceTokenizer(boolean withIndexMode) {
         this(DEFAULT_TOKEN_ATTRIBUTE_FACTORY);
+        if (withIndexMode)
+            segMode = JiebaSegmenter.SegMode.INDEX;
+        else
+            segMode = JiebaSegmenter.SegMode.SEARCH;
     }
 
     /**
@@ -50,7 +55,7 @@ public final class SentenceTokenizer extends SegmentingTokenizerBase {
 
     protected void setNextSentence(int sentenceStart, int sentenceEnd) {
         String sentence = new String(this.buffer, sentenceStart, sentenceEnd - sentenceStart);
-        this.tokens = this.segmenter.process(sentence, JiebaSegmenter.SegMode.INDEX).iterator();
+        this.tokens = this.segmenter.process(sentence, this.segMode).iterator();
     }
 
     @Override
