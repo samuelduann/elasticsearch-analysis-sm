@@ -25,7 +25,6 @@ public class OtherTokenizer extends CharTokenizer {
     public OtherTokenizer() {
         super();
     }
-
     /**
      * Construct a new OtherTokenizer using a given
      * {@link org.apache.lucene.util.AttributeFactory}.

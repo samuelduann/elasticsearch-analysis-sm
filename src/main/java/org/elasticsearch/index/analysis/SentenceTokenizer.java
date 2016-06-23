@@ -30,9 +30,6 @@ public final class SentenceTokenizer extends SegmentingTokenizerBase {
     private Iterator<SegToken> tokens;
     private JiebaSegmenter segmenter;
 
-    private Iterator<SegToken> tokenIter;
-    private List<SegToken> array;
-
     public SentenceTokenizer() {
         this(DEFAULT_TOKEN_ATTRIBUTE_FACTORY);
     }
@@ -42,8 +39,6 @@ public final class SentenceTokenizer extends SegmentingTokenizerBase {
      */
     private final static String PUNCTION = "。，！？；,!?;";
     private final static String SPACES = " 　\t\r\n";
-
-    private int tokenStart = 0, tokenEnd = 0;
 
     public SentenceTokenizer(AttributeFactory factory) {
         super(factory, (BreakIterator)sentenceProto.clone());
@@ -63,7 +58,7 @@ public final class SentenceTokenizer extends SegmentingTokenizerBase {
         if(this.tokens != null && this.tokens.hasNext()) {
             SegToken token = (SegToken)this.tokens.next();
             this.clearAttributes();
-            this.termAtt.append(token.toString());
+            this.termAtt.append(token.word);
             this.offsetAtt.setOffset(this.correctOffset(token.startOffset), this.correctOffset(token.endOffset));
             this.typeAtt.setType("word");
             return true;
@@ -127,7 +122,6 @@ public final class SentenceTokenizer extends SegmentingTokenizerBase {
     @Override
     public void reset() throws IOException {
         super.reset();
-        tokenStart = tokenEnd = 0;
         this.tokens = null;
     }
 
