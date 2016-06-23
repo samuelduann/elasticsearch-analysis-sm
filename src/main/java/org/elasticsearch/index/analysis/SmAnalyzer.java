@@ -84,7 +84,7 @@ public final class SmAnalyzer extends Analyzer {
 
 		configFile = env.configFile().toFile();
 		this.stopWords = stop ? this.loadStopWords(configFile) : CharArraySet.EMPTY_SET;
-		WordDictionary.getInstance().init(configFile.toPath());
+		WordDictionary.getInstance().init( new File(configFile, "jieba").toPath());
 
 		this.log.info("SmAnalyzer stopWords = {}", this.stopWords.toString());
 	}
