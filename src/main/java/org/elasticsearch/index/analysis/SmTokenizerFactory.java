@@ -8,6 +8,8 @@ import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.Index;
 import org.elasticsearch.index.settings.IndexSettingsService;
 
+import java.io.File;
+
 /**
  * Created by samuel on 16/6/20.
  */

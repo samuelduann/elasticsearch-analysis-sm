@@ -68,8 +68,7 @@ public final class SmAnalyzer extends Analyzer {
 	private CharArraySet loadStopWords(File configFile) {
 		try {
 			return CharArraySet.unmodifiableSet(WordlistLoader.getWordSet(
-					new FileReader(new File(new File(configFile, "jieba"),
-							"stopwords.txt")), STOPWORD_FILE_COMMENT));
+					new FileReader(new File(new File(configFile, "jieba"), "stopwords.txt")), STOPWORD_FILE_COMMENT));
 		} catch (IOException e) {
 			return DefaultSetHolder.DEFAULT_STOP_SET;
 		}
@@ -81,9 +80,10 @@ public final class SmAnalyzer extends Analyzer {
 		boolean stop = settings.getAsBoolean("stop", true);
 
 		configFile = env.configFile().toFile();
-		this.stopWords = stop ? this.loadStopWords(configFile)
-				: CharArraySet.EMPTY_SET;
+		this.stopWords = stop ? this.loadStopWords(configFile) : CharArraySet.EMPTY_SET;
 		WordDictionary.getInstance().init(configFile.toPath());
+
+		this.log.info("SmAnalyzer stopWords = {}", this.stopWords.toString());
 	}
 
 	public SmAnalyzer(String segMode, File configFile, boolean isStop) {
@@ -91,8 +91,7 @@ public final class SmAnalyzer extends Analyzer {
 
 		this.type = segMode;
 		this.configFile = configFile;
-		WordDictionary.getInstance().init(
-				new File(configFile, "jieba").toPath());
+		WordDictionary.getInstance().init( new File(configFile, "jieba").toPath());
 		this.stopWords = isStop ? this.loadStopWords(configFile)
 				: CharArraySet.EMPTY_SET;
 
@@ -105,13 +104,7 @@ public final class SmAnalyzer extends Analyzer {
 	 */
 	@Override
 	protected TokenStreamComponents createComponents(String fieldName) {
-		Tokenizer tokenizer;
-		if (type.equals("other")) {
-			tokenizer = new OtherTokenizer();
-		} else {
-			tokenizer = new SentenceTokenizer();
-		}
-
+		Tokenizer tokenizer = new SentenceTokenizer();
 		return new TokenStreamComponents(tokenizer);
 	}
 }

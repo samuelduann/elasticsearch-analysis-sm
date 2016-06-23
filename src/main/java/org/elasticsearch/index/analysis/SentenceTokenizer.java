@@ -1,12 +1,17 @@
 package org.elasticsearch.index.analysis;
 
 import java.io.IOException;
-import java.io.Reader;
+import java.text.BreakIterator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
 
-import org.apache.lucene.analysis.Tokenizer;
+import com.huaban.analysis.jieba.JiebaSegmenter;
+import com.huaban.analysis.jieba.SegToken;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
+import org.apache.lucene.analysis.util.SegmentingTokenizerBase;
 import org.apache.lucene.util.AttributeFactory;
 
 /**
@@ -17,7 +22,20 @@ import org.apache.lucene.util.AttributeFactory;
  * 
  * @lucene.experimental
  */
-public final class SentenceTokenizer extends Tokenizer {
+public final class SentenceTokenizer extends SegmentingTokenizerBase {
+    private static final BreakIterator sentenceProto;
+    private final CharTermAttribute termAtt;
+    private final OffsetAttribute offsetAtt;
+    private final TypeAttribute typeAtt;
+    private Iterator<SegToken> tokens;
+    private JiebaSegmenter segmenter;
+
+    private Iterator<SegToken> tokenIter;
+    private List<SegToken> array;
+
+    public SentenceTokenizer() {
+        this(DEFAULT_TOKEN_ATTRIBUTE_FACTORY);
+    }
 
     /**
      * End of sentence punctuation: 。，！？；,!?;
@@ -25,18 +43,36 @@ public final class SentenceTokenizer extends Tokenizer {
     private final static String PUNCTION = "。，！？；,!?;";
     private final static String SPACES = " 　\t\r\n";
 
-    private final StringBuilder buffer = new StringBuilder();
-
     private int tokenStart = 0, tokenEnd = 0;
 
-    private final CharTermAttribute termAtt = addAttribute(CharTermAttribute.class);
-    private final OffsetAttribute offsetAtt = addAttribute(OffsetAttribute.class);
-    private final TypeAttribute typeAtt = addAttribute(TypeAttribute.class);
-
-    public SentenceTokenizer() {
-        super();
+    public SentenceTokenizer(AttributeFactory factory) {
+        super(factory, (BreakIterator)sentenceProto.clone());
+        this.termAtt = (CharTermAttribute)this.addAttribute(CharTermAttribute.class);
+        this.offsetAtt = (OffsetAttribute)this.addAttribute(OffsetAttribute.class);
+        this.typeAtt = (TypeAttribute)this.addAttribute(TypeAttribute.class);
+        segmenter = new JiebaSegmenter();
     }
 
+    protected void setNextSentence(int sentenceStart, int sentenceEnd) {
+        String sentence = new String(this.buffer, sentenceStart, sentenceEnd - sentenceStart);
+        this.tokens = this.segmenter.process(sentence, JiebaSegmenter.SegMode.INDEX).iterator();
+    }
+
+    @Override
+    public boolean incrementWord() {
+        if(this.tokens != null && this.tokens.hasNext()) {
+            SegToken token = (SegToken)this.tokens.next();
+            this.clearAttributes();
+            this.termAtt.append(token.toString());
+            this.offsetAtt.setOffset(this.correctOffset(token.startOffset), this.correctOffset(token.endOffset));
+            this.typeAtt.setType("word");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /*
     @Override
     public boolean incrementToken() throws IOException {
         clearAttributes();
@@ -86,17 +122,17 @@ public final class SentenceTokenizer extends Tokenizer {
             return true;
         }
     }
+    */
 
     @Override
     public void reset() throws IOException {
         super.reset();
         tokenStart = tokenEnd = 0;
+        this.tokens = null;
     }
 
-    @Override
-    public void end() {
-        // set final offset
-        final int finalOffset = correctOffset(tokenEnd);
-        offsetAtt.setOffset(finalOffset, finalOffset);
+    static {
+        sentenceProto = BreakIterator.getSentenceInstance(Locale.ROOT);
     }
+
 }
