@@ -18,7 +18,7 @@ import org.elasticsearch.common.logging.Loggers;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.env.Environment;
 
-import com.huaban.analysis.jieba.WordDictionary;
+import com.univinu.awsome.WordDictionary;
 
 public final class SmAnalyzer extends Analyzer {
 	private final ESLogger log = Loggers.getLogger(SmAnalyzer.class);
@@ -30,8 +30,6 @@ public final class SmAnalyzer extends Analyzer {
 	private static final String STOPWORD_FILE_COMMENT = "//";
 
 	/**
-	 * Returns an unmodifiable instance of the default stop-words set.
-	 *
 	 * @return an unmodifiable instance of the default stop-words set.
 	 */
 	public static CharArraySet getDefaultStopSet() {
@@ -51,16 +49,14 @@ public final class SmAnalyzer extends Analyzer {
 			} catch (IOException ex) {
 				// default set should always be present as it is part of the
 				// distribution (JAR)
-				throw new RuntimeException(
-						"Unable to load default stopword set");
+				throw new RuntimeException("Unable to load default stopword set");
 			}
 		}
 
 		static CharArraySet loadDefaultStopWordSet() throws IOException {
 			// make sure it is unmodifiable as we expose it in the outer class
-			return CharArraySet.unmodifiableSet(WordlistLoader.getWordSet(
-					IOUtils.getDecodingReader(SmAnalyzer.class,
-							DEFAULT_STOPWORD_FILE, StandardCharsets.UTF_8),
+			return CharArraySet.unmodifiableSet(
+					WordlistLoader.getWordSet(IOUtils.getDecodingReader(SmAnalyzer.class, DEFAULT_STOPWORD_FILE, StandardCharsets.UTF_8),
 					STOPWORD_FILE_COMMENT));
 		}
 	}
@@ -71,7 +67,7 @@ public final class SmAnalyzer extends Analyzer {
 	private CharArraySet loadStopWords(File configFile) {
 		try {
 			return CharArraySet.unmodifiableSet(WordlistLoader.getWordSet(
-					new FileReader(new File(new File(configFile, "jieba"), "stopwords.txt")), STOPWORD_FILE_COMMENT));
+					new FileReader(new File(new File(configFile, "awsome"), "stopwords.txt")), STOPWORD_FILE_COMMENT));
 		} catch (IOException e) {
 			return DefaultSetHolder.DEFAULT_STOP_SET;
 		}
@@ -84,7 +80,7 @@ public final class SmAnalyzer extends Analyzer {
 
 		configFile = env.configFile().toFile();
 		this.stopWords = stop ? this.loadStopWords(configFile) : CharArraySet.EMPTY_SET;
-		WordDictionary.getInstance().init( new File(configFile, "jieba").toPath());
+		WordDictionary.getInstance().init( new File(configFile, "awsome").toPath());
 
 		this.log.info("SmAnalyzer stopWords = {}", this.stopWords.toString());
 	}
@@ -94,7 +90,7 @@ public final class SmAnalyzer extends Analyzer {
 
 		this.type = segMode;
 		this.configFile = configFile;
-		WordDictionary.getInstance().init( new File(configFile, "jieba").toPath());
+		WordDictionary.getInstance().init( new File(configFile, "awsome").toPath());
 		this.stopWords = isStop ? this.loadStopWords(configFile)
 				: CharArraySet.EMPTY_SET;
 
@@ -102,9 +98,6 @@ public final class SmAnalyzer extends Analyzer {
 		this.log.info("SmAnalyzer stopWords = {}", this.stopWords.toString());
 	}
 
-	/**
-	 * 重载Analyzer接口，构造分词组件
-	 */
 	@Override
 	protected TokenStreamComponents createComponents(String fieldName) {
 		Tokenizer tokenizer = new SentenceTokenizer(this.type.equals("index"));

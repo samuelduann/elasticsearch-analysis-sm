@@ -94,9 +94,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.huaban</groupId>
-            <artifactId>jieba-analysis</artifactId>
-            <version>1.0.2</version>
+            <groupId>com.univinu</groupId>
+            <artifactId>awsome</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>/Users/samuel/Downloads/sm-analysis-1.0.0-SNAPSHOT.jar</systemPath>
         </dependency>
     </dependencies>
 

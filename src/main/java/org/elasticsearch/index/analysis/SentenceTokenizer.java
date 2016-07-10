@@ -6,8 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import com.huaban.analysis.jieba.JiebaSegmenter;
-import com.huaban.analysis.jieba.SegToken;
+import com.univinu.awsome.AwsomeSegmenter;
+import com.univinu.awsome.SegToken;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
@@ -28,15 +28,15 @@ public final class SentenceTokenizer extends SegmentingTokenizerBase {
     private final OffsetAttribute offsetAtt;
     private final TypeAttribute typeAtt;
     private Iterator<SegToken> tokens;
-    private JiebaSegmenter segmenter;
-    private JiebaSegmenter.SegMode segMode;
+    private AwsomeSegmenter segmenter;
+    private AwsomeSegmenter.SegMode segMode;
 
     public SentenceTokenizer(boolean withIndexMode) {
         this(DEFAULT_TOKEN_ATTRIBUTE_FACTORY);
         if (withIndexMode)
-            segMode = JiebaSegmenter.SegMode.INDEX;
+            segMode = AwsomeSegmenter.SegMode.INDEX;
         else
-            segMode = JiebaSegmenter.SegMode.SEARCH;
+            segMode = AwsomeSegmenter.SegMode.SEARCH;
     }
 
     /**
@@ -50,7 +50,7 @@ public final class SentenceTokenizer extends SegmentingTokenizerBase {
         this.termAtt = (CharTermAttribute)this.addAttribute(CharTermAttribute.class);
         this.offsetAtt = (OffsetAttribute)this.addAttribute(OffsetAttribute.class);
         this.typeAtt = (TypeAttribute)this.addAttribute(TypeAttribute.class);
-        segmenter = new JiebaSegmenter();
+        segmenter = new AwsomeSegmenter();
     }
 
     protected void setNextSentence(int sentenceStart, int sentenceEnd) {
